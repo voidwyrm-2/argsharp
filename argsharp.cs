@@ -155,7 +155,7 @@ namespace Argsharp
     /// <summary>
     /// A map of Flags to ParseResults
     /// </summary>
-    public class ResultMap
+    public readonly struct ResultMap
     {
         private readonly Dictionary<string, ParseResult> map;
 
@@ -338,5 +338,15 @@ namespace Argsharp
 
             return new(new(parsed), [.. leftovers]);
         }
+
+        /// <summary>
+        /// Creates a new Parser instance with the current's values
+        /// </summary>
+        public Parser Copy(string[]? args = null, string? name = null, string? description = null) => new(args is not null ? args : this.args, flags, name is not null ? name : this.name, description is not null ? description : this.description);
+
+        /// <summary>
+        /// Creates a new Parser instance with the current's values
+        /// </summary>
+        public Parser Copy(List<string>? args = null, string? name = null, string? description = null) => Copy(args?.ToArray(), name, description);
     }
 }
