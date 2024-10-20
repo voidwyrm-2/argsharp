@@ -180,6 +180,18 @@ namespace Argsharp
         /// </summary>
         /// <returns>True if the Flag is found, false otherwise</returns>
         public bool TryGetFlag(Flag flag, out string result) => TryGetFlag(flag.Mkey, out result);
+
+        /// <summary>
+        /// Checks if a flag exists
+        /// </summary>
+        /// <returns>True if the Flag is found, false otherwise</returns>
+        public bool TryFlag(string mkey) => TryGetFlag(mkey, out var _);
+
+        /// <summary>
+        /// Checks if a flag exists
+        /// </summary>
+        /// <returns>True if the Flag is found, false otherwise</returns>
+        public bool TryFlag(Flag flag) => TryGetFlag(flag, out var _);
     }
 
     /// <summary>

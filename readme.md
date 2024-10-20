@@ -17,7 +17,7 @@ class Program
         var parsed = parser.Parse();
         var pflags = parsed.Item1;
 
-        if (pflags.TryGetFlag(help, out var _))
+        if (pflags.TryFlag(help))
         {
             Console.WriteLine(parser.Help());
             return;
