@@ -14,8 +14,7 @@ class Program
 
         Parser parser = new(args, [help, echo], "example");
 
-        var parsed = parser.Parse();
-        var pflags = parsed.Item1;
+        var (pflags, _) = parser.Parse();
 
         if (pflags.TryFlag(help))
         {

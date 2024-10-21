@@ -77,13 +77,13 @@ namespace Argsharp
         /// <summary>
         /// The flag's help, shown in the message that's usually shown when the -h or --help flags are given
         /// </summary>
-        public Tuple<string, string> Help()
+        public (string, string) Help()
         {
             string flag = shorthand == "-" ? "" : shorthand;
             if (flag != "") flag += "  ";
             flag += longhand;
 
-            return new(flag, description);
+            return (flag, description);
         }
 
         /// <summary>
@@ -205,13 +205,13 @@ namespace Argsharp
 
         private static bool IsFlag(string f) => f.Length != 0 && f[0] == '-' && f.Length > 1;
 
-        Tuple<bool, Flag> IsValidFlag(string f)
+        (bool, Flag) IsValidFlag(string f)
         {
             foreach (Flag fl in flags)
             {
                 if (fl == f) return new(true, fl);
             }
-            return new(false, new Flag("a"));
+            return (false, new Flag("a"));
         }
 
         private void SortFlags() => flags.ToList().Sort((a, b) => !a.required && b.required ? -1 : a.required && !b.required ? 1 : 0);
@@ -249,7 +249,7 @@ namespace Argsharp
             if (description.Length != 0) help += "\n";
             help += "\nArguments:";
 
-            List<Tuple<string, string>> flagHelp = [];
+            List<(string, string)> flagHelp = [];
             int min = int.MaxValue;
             int max = 0;
 
@@ -310,7 +310,7 @@ namespace Argsharp
         /// Returns a Tuple containing the flags and the leftover arguments that aren't flags and aren't matched to flags.
         /// </summary>
         /// <exception cref="ArgsharpParseException"></exception>
-        public Tuple<ResultMap, string[]> Parse()
+        public (ResultMap, string[]) Parse()
         {
             Dictionary<string, ParseResult> parsed = [];
             List<string> leftovers = [];
@@ -319,16 +319,16 @@ namespace Argsharp
             {
                 if (IsFlag(args[i]))
                 {
-                    Tuple<bool, Flag> valid = IsValidFlag(args[i]);
-                    if (valid.Item1)
+                    var (valid, f) = IsValidFlag(args[i]);
+                    if (valid)
                     {
-                        if (valid.Item2.storeTrue)
-                            parsed.Add(valid.Item2.Mkey, new(true));
+                        if (f.storeTrue)
+                            parsed.Add(f.Mkey, new(true));
                         else
                         {
-                            if (i + 1 >= args.Length) throw new ArgsharpParseException($"flag {valid.Item2.Rstr()} requires an arguement");
+                            if (i + 1 >= args.Length) throw new ArgsharpParseException($"flag {f.Rstr()} requires an arguement");
 
-                            parsed.Add(valid.Item2.Mkey, new(true, args[i + 1]));
+                            parsed.Add(f.Mkey, new(true, args[i + 1]));
                             i++;
                         }
                     }
@@ -348,7 +348,7 @@ namespace Argsharp
                 }
             }
 
-            return new(new(parsed), [.. leftovers]);
+            return (new(parsed), [.. leftovers]);
         }
 
         /// <summary>
