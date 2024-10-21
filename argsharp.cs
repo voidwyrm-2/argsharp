@@ -289,7 +289,7 @@ namespace Argsharp
             int c = 0;
             foreach (Flag f in flags)
             {
-                use += use[^1] == '\n' ? f.Usage() : $" {f.Usage()}";
+                use += use.Length > 0 && use[^1] == '\n' ? f.Usage() : $" {f.Usage()}";
                 c++;
 
                 if (c == 3)
