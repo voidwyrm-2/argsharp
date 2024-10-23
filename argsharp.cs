@@ -202,6 +202,7 @@ namespace Argsharp
         private readonly string name, description;
         private readonly string[] args;
         private readonly Flag[] flags;
+        private readonly string[] inputs;
 
         private static bool IsFlag(string f) => f.Length != 0 && f[0] == '-' && f.Length > 1;
 
@@ -218,18 +219,19 @@ namespace Argsharp
 
         /// <summary>
         /// </summary>
-        public Parser(string[] args, Flag[] flags, string name, string description = "")
+        public Parser(string[] args, Flag[] flags, string name, string description = "", string[]? inputs = null)
         {
             this.args = args;
             this.flags = flags;
             SortFlags();
             this.name = name;
             this.description = description;
+            this.inputs = inputs ?? [];
         }
 
         /// <summary>
         /// </summary>
-        public Parser(List<string> args, Flag[] flags, string name, string description = "") : this(args.ToArray(), flags, name, description) { }
+        public Parser(List<string> args, Flag[] flags, string name, string description = "", string[]? inputs = null) : this(args.ToArray(), flags, name, description, inputs) { }
 
         /// <summary>
         /// Generates the help message that usually shows when `-h` or `--help` is given as a flag.
@@ -275,6 +277,7 @@ namespace Argsharp
         public string Usage()
         {
             string use = name;
+            foreach (string i in inputs) use += $" <{i}>";
             string fu = FlagUsage();
             if (fu.Length != 0) use += $" {fu}";
             return use;
